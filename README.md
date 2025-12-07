@@ -1,1 +1,1 @@
-# ligg-ey-mode
+# liggéey-mode
