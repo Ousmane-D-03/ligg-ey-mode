@@ -18,6 +18,8 @@ import Signup from './pages/Signup';
 import Browse from './pages/Browse';
 import ArticlePage from './pages/ArticlePage';
 import SellPage from './pages/SellPage';
+import MessagesPage from './pages/MessagesPage';
+import FavoritesPage from './pages/FavoritesPage';
 // import ProfilePage from './pages/ProfilePage';
 // import ArticlePage from './pages/ArticlePage';
 // import ProfilePage from './pages/ProfilePage';
@@ -42,8 +44,8 @@ function App() {
                 <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
                 <Route path={ROUTES.PROFILE} element={<div className="container mx-auto py-8"><h1>Profile - À venir</h1></div>} />
                 <Route path={ROUTES.MY_PROFILE} element={<div className="container mx-auto py-8"><h1>My Profile - À venir</h1></div>} />
-                <Route path={ROUTES.MESSAGES} element={<div className="container mx-auto py-8"><h1>Messages - À venir</h1></div>} />
-                <Route path={ROUTES.FAVORITES} element={<div className="container mx-auto py-8"><h1>Favorites - À venir</h1></div>} />
+                <Route path={ROUTES.MESSAGES} element={<MessagesPage />} />
+                <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
                 <Route path={ROUTES.SELL} element={<SellPage />} />
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGNUP} element={<Signup />} />
