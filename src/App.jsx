@@ -16,7 +16,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Browse from './pages/Browse';
-// import ArticlePage from './pages/ArticlePage';
+import ArticlePage from './pages/ArticlePage';
+import SellPage from './pages/SellPage';
+// import ProfilePage from './pages/ProfilePage';
 // import ArticlePage from './pages/ArticlePage';
 // import ProfilePage from './pages/ProfilePage';
 // import MessagesPage from './pages/MessagesPage';
@@ -37,12 +39,12 @@ function App() {
                 {/* Routes principales */}
                 <Route path={ROUTES.HOME} element={<Home />} />
                 <Route path={ROUTES.BROWSE} element={<Browse />} />
-                <Route path={ROUTES.ARTICLE} element={<div className="container mx-auto py-8"><h1>Article Detail - À venir</h1></div>} />
+                <Route path={ROUTES.ARTICLE} element={<ArticlePage />} />
                 <Route path={ROUTES.PROFILE} element={<div className="container mx-auto py-8"><h1>Profile - À venir</h1></div>} />
                 <Route path={ROUTES.MY_PROFILE} element={<div className="container mx-auto py-8"><h1>My Profile - À venir</h1></div>} />
                 <Route path={ROUTES.MESSAGES} element={<div className="container mx-auto py-8"><h1>Messages - À venir</h1></div>} />
                 <Route path={ROUTES.FAVORITES} element={<div className="container mx-auto py-8"><h1>Favorites - À venir</h1></div>} />
-                <Route path={ROUTES.SELL} element={<div className="container mx-auto py-8"><h1>Sell - À venir</h1></div>} />
+                <Route path={ROUTES.SELL} element={<SellPage />} />
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGNUP} element={<Signup />} />
                 <Route path={ROUTES.SETTINGS} element={<div className="container mx-auto py-8"><h1>Settings - À venir</h1></div>} />
