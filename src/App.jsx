@@ -21,6 +21,7 @@ import SellPage from './pages/SellPage';
 import MessagesPage from './pages/MessagesPage';
 import FavoritesPage from './pages/FavoritesPage';
 import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 // import ArticlePage from './pages/ArticlePage';
 // import ProfilePage from './pages/ProfilePage';
 // import MessagesPage from './pages/MessagesPage';
@@ -49,7 +50,7 @@ function App() {
                 <Route path={ROUTES.SELL} element={<SellPage />} />
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGNUP} element={<Signup />} />
-                <Route path={ROUTES.SETTINGS} element={<div className="container mx-auto py-8"><h1>Settings - À venir</h1></div>} />
+                <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
                 
                 {/* 404 */}
                 <Route path="*" element={<div className="container mx-auto py-8"><h1>404 - Page non trouvée</h1></div>} />
