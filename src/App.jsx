@@ -15,6 +15,7 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import Browse from './pages/Browse';
 import ArticlePage from './pages/ArticlePage';
 import SellPage from './pages/SellPage';
@@ -50,6 +51,7 @@ function App() {
                 <Route path={ROUTES.SELL} element={<SellPage />} />
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGNUP} element={<Signup />} />
+                <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
                 <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
                 
                 {/* 404 */}
