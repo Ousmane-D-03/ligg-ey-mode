@@ -21,7 +21,7 @@ import Badge from '../components/common/Badge';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { 
     orders, 
     getPendingConfirmationOrders,
@@ -29,19 +29,32 @@ const AdminDashboard = () => {
     ORDER_STATUS 
   } = useOrders();
 
-  const [activeTab, setActiveTab] = useState('pending'); // pending, confirmed, completed
+  const [activeTab, setActiveTab] = useState('pending');
   const [copied, setCopied] = useState(null);
 
-  // Rediriger si pas admin
+  // Vérifier l'authentification
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate(ROUTES.LOGIN);
-      return;
+    // Attendre que l'auth soit chargée
+    if (!authLoading) {
+      if (!isAuthenticated()) {
+        navigate(ROUTES.LOGIN);
+      }
     }
-    
-    // TODO: Vérifier si user est admin
-    // Pour le moment, accessible à tous (à sécuriser en production)
-  }, [isAuthenticated, navigate]);
+  }, [authLoading, isAuthenticated, navigate]);
+
+  // Afficher spinner pendant le chargement
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  // Si pas connecté (au cas où)
+  if (!user) {
+    return null;
+  }
 
   const handleConfirmPayment = async (orderId) => {
     const result = await confirmPayment(orderId);
