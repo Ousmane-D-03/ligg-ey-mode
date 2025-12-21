@@ -75,14 +75,44 @@ const ArticlePage = () => {
       return; // Ne peut pas se contacter soi-même
     }
 
-    setShowContactModal(true);
-    setMessage(`Bonjour, je suis intéressé(e) par votre article "${article.title}".`);
+    // Si livraison disponible, proposer d'acheter
+    if (article.deliveryOptions?.includes('shipping')) {
+      setShowContactModal(true);
+      setMessage(`Bonjour, je suis intéressé(e) par votre article "${article.title}".`);
+    } else {
+      // Sinon juste contacter
+      setShowContactModal(true);
+      setMessage(`Bonjour, je suis intéressé(e) par votre article "${article.title}".`);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (!isAuthenticated()) {
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+    
+    // Déterminer le mode de livraison
+    const deliveryMode = article.deliveryOptions?.includes('shipping') 
+      ? 'shipping' 
+      : 'meetup';
+    
+    // Si rencontre uniquement, juste contacter
+    if (deliveryMode === 'meetup') {
+      handleContactSeller();
+      return;
+    }
+    
+    // Sinon rediriger vers paiement
+    navigate(`/paiement?article=${article.id}&delivery=${deliveryMode}`);
   };
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     setSendingMessage(true);
+    
+    // Préparer les données du message avec toutes les infos nécessaires
     const result = await startConversation(
       article.sellerId,
       article.sellerName,
@@ -325,15 +355,30 @@ const ArticlePage = () => {
 
               {!isOwnArticle ? (
                 <div className="space-y-3">
+                  {/* Bouton principal : Acheter ou Contacter selon livraison */}
                   <Button
                     variant="primary"
                     fullWidth
                     size="lg"
-                    icon={<MessageCircle className="w-5 h-5" />}
-                    onClick={handleContactSeller}
+                    icon={article.deliveryOptions?.includes('shipping') ? null : <MessageCircle className="w-5 h-5" />}
+                    onClick={handleBuyNow}
                   >
-                    Contacter le vendeur
+                    {article.deliveryOptions?.includes('shipping') 
+                      ? 'Acheter maintenant' 
+                      : 'Contacter le vendeur'}
                   </Button>
+                  
+                  {/* Si livraison dispo, bouton secondaire pour contacter */}
+                  {article.deliveryOptions?.includes('shipping') && (
+                    <Button
+                      variant="outline"
+                      fullWidth
+                      icon={<MessageCircle className="w-5 h-5" />}
+                      onClick={handleContactSeller}
+                    >
+                      Poser une question
+                    </Button>
+                  )}
 
                   <Button
                     variant="outline"

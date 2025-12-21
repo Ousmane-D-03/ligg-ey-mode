@@ -103,7 +103,9 @@ export const ArticlesProvider = ({ children }) => {
         sellerId: user.id,
         sellerName: user.fullName,
         sellerCity: user.city,
-        sellerRating: user.rating || 0
+        sellerRating: user.rating || 0,
+        quantity: formData.quantity || 1,
+        initialQuantity: formData.quantity || 1 // Pour historique
       });
 
       // Ajouter à la liste locale
@@ -146,8 +148,34 @@ export const ArticlesProvider = ({ children }) => {
   };
 
   /**
-   * Supprimer un article
+   * Décrémenter le stock d'un article
    */
+  const decrementStock = async (articleId) => {
+    try {
+      const article = await getArticle(articleId);
+      if (!article) return { success: false, error: 'Article non trouvé' };
+
+      const newQuantity = (article.quantity || 1) - 1;
+      
+      // Si stock à 0, marquer comme non disponible
+      const updates = {
+        quantity: Math.max(0, newQuantity),
+        isAvailable: newQuantity > 0
+      };
+
+      await updateArticle(articleId, updates);
+      
+      // Mettre à jour dans la liste locale
+      setArticles(prev =>
+        prev.map(a => (a.id === articleId ? { ...a, ...updates } : a))
+      );
+
+      return { success: true, newQuantity };
+    } catch (err) {
+      console.error('Decrement stock error:', err);
+      return { success: false, error: 'Erreur' };
+    }
+  };
   const deleteExistingArticle = async (articleId) => {
     try {
       setLoading(true);
@@ -191,8 +219,8 @@ export const ArticlesProvider = ({ children }) => {
   const getFilteredArticles = () => {
     let filtered = [...articles];
 
-    // Filtrer par disponibilité
-    filtered = filtered.filter(a => a.isAvailable);
+    // Filtrer par disponibilité ET stock
+    filtered = filtered.filter(a => a.isAvailable && (a.quantity || 1) > 0);
 
     // Filtrer par recherche
     if (filters.search) {
@@ -312,6 +340,7 @@ export const ArticlesProvider = ({ children }) => {
     createNewArticle,
     updateExistingArticle,
     deleteExistingArticle,
+    decrementStock,
     getArticle,
     getFilteredArticles,
     getSellerArticles,

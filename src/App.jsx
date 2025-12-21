@@ -6,6 +6,7 @@ import { ROUTES } from './utils/constants';
 import { AuthProvider } from './context/AuthContext';
 import { ArticlesProvider } from './context/ArticlesContext';
 import { MessagingProvider } from './context/MessagingContext';
+import { OrderProvider } from './context/OrderContext';
 
 // Layout
 import Header from './components/layout/Header';
@@ -23,6 +24,8 @@ import MessagesPage from './pages/MessagesPage';
 import FavoritesPage from './pages/FavoritesPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import CheckoutPage from './pages/CheckoutPage';
+import AdminDashboard from './pages/AdminDashboard';
 // import ArticlePage from './pages/ArticlePage';
 // import ProfilePage from './pages/ProfilePage';
 // import MessagesPage from './pages/MessagesPage';
@@ -35,11 +38,12 @@ function App() {
     <AuthProvider>
       <ArticlesProvider>
         <MessagingProvider>
-          <div className="min-h-screen flex flex-col bg-gray-50">
-            <Header />
-            
-            <main className="flex-1">
-              <Routes>
+          <OrderProvider>
+            <div className="min-h-screen flex flex-col bg-gray-50">
+              <Header />
+              
+              <main className="flex-1">
+                <Routes>
                 {/* Routes principales */}
                 <Route path={ROUTES.HOME} element={<Home />} />
                 <Route path={ROUTES.BROWSE} element={<Browse />} />
@@ -52,6 +56,8 @@ function App() {
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGNUP} element={<Signup />} />
                 <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+                <Route path="/paiement" element={<CheckoutPage />} />
+                <Route path="/admin" element={<AdminDashboard />} />
                 <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
                 
                 {/* 404 */}
@@ -61,6 +67,7 @@ function App() {
             
             <Footer />
           </div>
+          </OrderProvider>
         </MessagingProvider>
       </ArticlesProvider>
     </AuthProvider>

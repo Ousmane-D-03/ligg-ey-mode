@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useArticles } from '../context/ArticlesContext';
+import WaveConfigModal from '../components/common/WaveConfigModal';
 import { 
   ROUTES,
   CATEGORIES,
@@ -30,7 +31,7 @@ import Card from '../components/common/Card';
 
 const SellPage = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, updateProfile } = useAuth();
   const { createNewArticle } = useArticles();
 
   const [formData, setFormData] = useState({
@@ -43,6 +44,7 @@ const SellPage = () => {
     color: '',
     condition: '',
     price: '',
+    quantity: 1, // NOUVEAU
     city: user?.city || '',
     deliveryOptions: [DELIVERY_OPTIONS.MEETUP],
     images: []
@@ -50,7 +52,8 @@ const SellPage = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Info, 2: Photos, 3: Prix
+  const [step, setStep] = useState(1);
+  const [showWaveConfig, setShowWaveConfig] = useState(false); // NOUVEAU
 
   // Rediriger si non connecté
   useEffect(() => {
@@ -171,6 +174,15 @@ const SellPage = () => {
     
     if (!validateStep(3)) return;
 
+    // Vérifier si livraison est activée
+    const hasShipping = formData.deliveryOptions.includes(DELIVERY_OPTIONS.SHIPPING);
+    
+    // Si livraison activée, vérifier config Wave
+    if (hasShipping && (!user.waveFullName || !user.wavePhone)) {
+      setShowWaveConfig(true);
+      return;
+    }
+
     setLoading(true);
 
     const result = await createNewArticle(formData);
@@ -179,9 +191,23 @@ const SellPage = () => {
       navigate(`/article/${result.article.id}`);
     } else {
       setErrors(result.errors || {});
-      setStep(1); // Retour à la première étape si erreurs
+      setStep(1);
     }
 
+    setLoading(false);
+  };
+
+  const handleWaveConfigSave = async (waveConfig) => {
+    // Sauvegarder dans le profil user
+    await updateProfile(waveConfig);
+    setShowWaveConfig(false);
+    
+    // Continuer la création
+    setLoading(true);
+    const result = await createNewArticle(formData);
+    if (result.success) {
+      navigate(`/article/${result.article.id}`);
+    }
     setLoading(false);
   };
 
@@ -443,17 +469,33 @@ const SellPage = () => {
               <Card padding="lg" className="space-y-6">
                 <h2 className="text-xl font-semibold">Prix et livraison</h2>
 
-                <Input
-                  label="Prix"
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  placeholder="15000"
-                  error={errors.price}
-                  required
-                  helperText="Entre 500 et 500 000 FCFA • Commission de 8% à la vente"
-                />
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Input
+                    label="Prix unitaire"
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    placeholder="15000"
+                    error={errors.price}
+                    required
+                    helperText="Entre 500 et 500 000 FCFA"
+                  />
+
+                  <Input
+                    label="Quantité en stock"
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    placeholder="1"
+                    min="1"
+                    max="99"
+                    error={errors.quantity}
+                    required
+                    helperText="Nombre d'articles disponibles"
+                  />
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -542,6 +584,14 @@ const SellPage = () => {
           </form>
         </div>
       </div>
+
+      {/* Modal Wave Config */}
+      <WaveConfigModal
+        isOpen={showWaveConfig}
+        onClose={() => setShowWaveConfig(false)}
+        onSave={handleWaveConfigSave}
+        currentConfig={user.waveFullName ? { waveFullName: user.waveFullName, wavePhone: user.wavePhone } : null}
+      />
     </div>
   );
 };
